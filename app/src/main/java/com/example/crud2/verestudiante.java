@@ -43,15 +43,36 @@ public class verestudiante extends AppCompatActivity {
 
     }
 
+    public boolean ValidarVacio(String nombre,String programa){
+
+        boolean vacio=false;
+        if(nombre.isEmpty()){
+            txtgetnombre.setError("Este campo no puede quedar vacio");
+            vacio=true;
+        }
+        if(programa.isEmpty()){
+            txtgetprograma.setError("Este campo no puede quedar vacio");
+            vacio=true;
+        }
+
+        return vacio;
+    }
     public void Editar(View view){
        SQLiteDatabase db= conn.getWritableDatabase();
         String[] parametros={txtgetcodigo.getText().toString()};
         ContentValues values= new ContentValues();
-        values.put(Constantes.Campo_nombre,txtgetnombre.getText().toString());
-        values.put(Constantes.Campo_programa,txtgetprograma.getText().toString());
 
-        db.update(Constantes.TABLA_ESTUDIANTE,values,Constantes.Campo_ID+"=?",parametros);
-        Toast.makeText(getApplicationContext(),"Estudiante actualizado",Toast.LENGTH_LONG).show();
+        String nombre=txtgetnombre.getText().toString();
+        String programa= txtgetprograma.getText().toString();
+
+        if(!ValidarVacio(nombre,programa)){
+            values.put(Constantes.Campo_nombre,nombre);
+            values.put(Constantes.Campo_programa,programa);
+
+            db.update(Constantes.TABLA_ESTUDIANTE,values,Constantes.Campo_ID+"=?",parametros);
+            Toast.makeText(getApplicationContext(),"Estudiante actualizado",Toast.LENGTH_LONG).show();
+        }
+
         db.close();
 
     }

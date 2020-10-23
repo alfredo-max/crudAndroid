@@ -25,7 +25,24 @@ public class MainActivity extends AppCompatActivity {
 
         conn= new ConexionSQLiteHelper(this,"bd_estudiantes",null ,1);
     }
+    public boolean ValidarVacio(String codigo,String nombre,String programa){
 
+        boolean vacio=false;
+        if(codigo.isEmpty()){
+            CampoCodigo.setError("Este campo no puede quedar vacio");
+            vacio=true;
+        }
+        if(nombre.isEmpty()){
+            CampoNombre.setError("Este campo no puede quedar vacio");
+            vacio=true;
+        }
+        if(programa.isEmpty()){
+            CampoPrograma.setError("Este campo no puede quedar vacio");
+            vacio=true;
+        }
+
+        return vacio;
+    }
 
     public void onClick(View view){
         Intent miIntent=null;
@@ -50,15 +67,23 @@ public class MainActivity extends AppCompatActivity {
     private void Registrar() {
         SQLiteDatabase db= conn.getWritableDatabase();
         ContentValues values= new ContentValues();
-        values.put(Constantes.Campo_ID,CampoCodigo.getText().toString());
-        values.put(Constantes.Campo_nombre,CampoNombre.getText().toString());
-        values.put(Constantes.Campo_programa,CampoPrograma.getText().toString());
-        if(!buscar()){
-            db.insert(Constantes.TABLA_ESTUDIANTE,Constantes.Campo_ID,values);
-            Toast.makeText(getApplicationContext(),"Estudiante Registrado",Toast.LENGTH_SHORT).show();
-        }else{
-            Toast.makeText(getApplicationContext(),"Codigo ya registrado",Toast.LENGTH_SHORT).show();
+        String codigo=CampoCodigo.getText().toString();
+        String nombre=CampoNombre.getText().toString();
+        String programa=CampoPrograma.getText().toString();
+
+        if(!ValidarVacio(codigo,nombre,programa)){
+            values.put(Constantes.Campo_ID,codigo);
+            values.put(Constantes.Campo_nombre,nombre);
+            values.put(Constantes.Campo_programa,programa);
+
+            if(!buscar()){
+                db.insert(Constantes.TABLA_ESTUDIANTE,Constantes.Campo_ID,values);
+                Toast.makeText(getApplicationContext(),"Estudiante Registrado",Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(getApplicationContext(),"Codigo ya registrado",Toast.LENGTH_SHORT).show();
+            }
         }
+
 
         db.close();
     }
